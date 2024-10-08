@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
-import TodoList from './ToDoList';
+import { render, screen } from '@testing-library/react';
+import TodoList from './TodoList';
 
 describe('TodoList Component', () => {
   test('renders without crashing', () => {
@@ -26,7 +26,7 @@ describe('TodoList Component', () => {
   test('renders todo items', () => {
     render(<TodoList />);
     const todoItems = screen.getAllByRole('tab');
-    expect(todoItems.length).toBe(4); // Assuming there are 4 todos in the initial state
+    expect(todoItems.length).toBe(4); 
   });
 
   test('renders todo items with correct titles', () => {
@@ -36,40 +36,31 @@ describe('TodoList Component', () => {
       expect(screen.getByText(title)).toBeInTheDocument();
     });
   });
-
   const getVariant = (dueDate) => {
     const currentDate = new Date();
     const dueDateObj = new Date(dueDate);
-    const diffTime = Math.abs(dueDateObj - currentDate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  
+    const diffTime = dueDateObj - currentDate;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); ]
+
     if (diffDays > 7) return 'primary';
     if (diffDays <= 7 && diffDays > 4) return 'success';
     if (diffDays <= 4 && diffDays > 2) return 'warning';
     return 'danger';
   };
-  
+
   test('applies correct variant based on due date', () => {
     render(<TodoList />);
     const todoItems = screen.getAllByRole('tabpanel');
-    const todoTab = screen.getAllByRole('tablist');
-  
+    const todoTabs = screen.getAllByRole('tab');
     let variants = [];
     todoItems.forEach((item) => {
-      const input = item.querySelector('input');
-      const dueDate = input.getAttribute('value'); // Assuming due date is stored in a data attribute
-      const expectedVariant = getVariant(dueDate);
+      const input = item.querySelector('input[type="date"]');
+      const dueDate = input.value; 
+      const expectedVariant = getVariant(dueDate); 
       variants.push(expectedVariant);
-      //expect(item).toHaveClass(`list-group-item-${expectedVariant}`);
     });
-
-    todoTab.forEach((item, index) => {
-        const anchor = item.querySelector('a');
-        expect(anchor).toHaveClass(`list-group-item-${variants[index]}`);
-        
+    todoTabs.forEach((item, index) => {
+      expect(item).toHaveClass(`list-group-item-${variants[index]}`);
+    });
   });
-
-
-   });
-
 });
